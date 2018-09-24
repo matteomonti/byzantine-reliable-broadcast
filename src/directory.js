@@ -1,4 +1,5 @@
 const axon = require('axon');
+const ip = require('ip');
 
 var settings =
 {
@@ -18,22 +19,22 @@ module.exports =
 
         var sock = axon.socket('rep');
 
-        var pubkeys = [];
+        var peers = [];
         var replies = [];
 
         // Initialization
 
         sock.bind(settings.port);
 
-        sock.on('message', function(pubkey, reply)
+        sock.on('message', function(peer, reply)
         {
-            pubkeys.push(pubkey);
+            peers.push(peer);
             replies.push(reply);
 
-            if(pubkeys.length == expected)
+            if(peers.length == expected)
             {
                 for(var i = 0; i < replies.length; i++)
-                    replies[i](pubkeys);
+                    replies[i](peers);
             }
         });
     },
@@ -43,7 +44,7 @@ module.exports =
         {
             var sock = axon.socket('req');
             sock.connect(settings.port, host);
-            sock.send(peer.pubkey(), function(peers)
+            sock.send({ip: ip.address(), pubkey: peer.pubkey()}, function(peers)
             {
                 sock.close();
                 resolve(peers);

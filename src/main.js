@@ -1,13 +1,21 @@
 const peer = require('./peer.js');
 const directory = require('./directory.js');
 
-const N = 10;
+const N = 16;
+const parameters = {pb: {G: 4}};
 
-console.log("Starting server")
-var server = new directory.server(N);
+if(process.env['pbrbmain'])
+{
+    console.log("Starting directory server");
+    var server = new directory.server(N);
+}
+else
+{
+    (async function()
+    {
+        console.log('Starting peer');
 
-console.log("Creating peers")
-var peers = [];
-
-for(var i = 0; i < N; i++)
-    peers.push(new peer());
+        var mypeer = new peer('main', parameters);
+        await mypeer.start();
+    })();
+}
