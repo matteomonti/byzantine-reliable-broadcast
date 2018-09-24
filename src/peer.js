@@ -9,7 +9,8 @@ module.exports = function()
     // Members
 
     var keypair = ed.createKeyPair(ed.createSeed());
-
+    var peers;
+    
     // Getters
 
     self.pubkey = function()
