@@ -4,6 +4,7 @@ const ip = require('ip');
 
 const directory = require('./directory.js');
 const pb = require('./pb.js');
+const pbrb = require('./pbrb.js');
 
 module.exports = function(host, parameters)
 {
@@ -36,12 +37,8 @@ module.exports = function(host, parameters)
             peers[peerlist[i].ip] = peerlist[i].pubkey;
 
         daemons.pb = new pb(peers, parameters.pb);
+        daemons.pbrb = new pbrb(peers, daemons.pb, parameters.pbrb);
 
-        daemons.pb.emitter.on('message', function(message)
-        {
-            console.log('Message received from PB:', message);
-        });
-
-        self.pbsend = daemons.pb.send; // TODO: Remove me, we don't need to expose this in the end
+        self.publish = daemons.pb.send;
     };
 };

@@ -17,5 +17,11 @@ else
 
         var mypeer = new peer('main', parameters);
         await mypeer.start();
+
+        if(process.env['pbrbsender'])
+            setTimeout(function()
+            {
+                mypeer.publish('Hello World!');
+            }, 10000);
     })();
 }

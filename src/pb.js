@@ -43,7 +43,6 @@ module.exports = function(peers, parameters)
         if(!(subscriptions.has(host)))
         {
             subscriptions.add(host);
-            console.log('Subscribing to', host);
 
             var socket = new axon.socket('sub');
             socket.connect(settings.port, host);
@@ -64,7 +63,6 @@ module.exports = function(peers, parameters)
 
     sockets.pub.on('connect', function(peer) // Reciprocate the connection
     {
-        console.log('Received subscription from', peer._peername.address, '(subscribing back)');
         subscribe(peer._peername.address);
     });
 
