@@ -2,6 +2,7 @@ const axon = require('axon');
 const objecthash = require('object-hash');
 const distributions = require('probability-distributions')
 const shuffle = require('shuffle-array');
+const eventEmitter = require('events');
 
 var settings =
 {
@@ -20,7 +21,22 @@ module.exports = function(peers, parameters)
     var messages = new Set();
     var subscriptions = new Set();
 
+    // Public members
+
+    self.emitter = new eventEmitter();
+
     // Private methods
+
+    var handle = function(message)
+    {
+        var hash = objecthash(message);
+        if(!(messages.has(hash)))
+        {
+            messages.add(hash);
+            sockets.pub.send(message);
+            self.emitter.emit('message', message);
+        }
+    };
 
     var subscribe = function(host)
     {
@@ -32,20 +48,15 @@ module.exports = function(peers, parameters)
             var socket = new axon.socket('sub');
             socket.connect(settings.port, host);
 
-            socket.on('message', function(message)
-            {
-                var hash = objecthash(message);
-                if(!(messages.has(hash)))
-                {
-                    messages.add(hash);
-                    sockets.pub.send(message);
-                    // TODO: Emit event here
-                }
-            });
+            socket.on('message', handle);
 
             sockets.sub.push(socket);
         }
     };
+
+    // Methods
+
+    self.send = handle;
 
     // Setup
 

@@ -1,7 +1,7 @@
 const peer = require('./peer.js');
 const directory = require('./directory.js');
 
-const N = 16;
+const N = 17;
 const parameters = {pb: {G: 4}};
 
 if(process.env['pbrbmain'])

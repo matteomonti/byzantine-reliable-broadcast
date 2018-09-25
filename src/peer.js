@@ -36,5 +36,12 @@ module.exports = function(host, parameters)
             peers[peerlist[i].ip] = peerlist[i].pubkey;
 
         daemons.pb = new pb(peers, parameters.pb);
+
+        daemons.pb.emitter.on('message', function(message)
+        {
+            console.log('Message received from PB:', message);
+        });
+
+        self.pbsend = daemons.pb.send; // TODO: Remove me, we don't need to expose this in the end
     };
 };
