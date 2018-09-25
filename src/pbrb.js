@@ -38,6 +38,13 @@ module.exports = function(peers, pb, parameters)
         deliver: false
     };
 
+    var messages =
+    {
+        echo: {received: {}, count: {}},
+        ready: {received: {}, count: {}},
+        deliver: {received: {}, count: {}}
+    };
+
     // Private methods
 
     var subscribe = function(hosts, size, port, handler)
@@ -80,6 +87,8 @@ module.exports = function(peers, pb, parameters)
         echo: function(host, message)
         {
             console.log('Received ECHO from', host, ':', message);
+
+
         },
         ready: function(host, message)
         {
