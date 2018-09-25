@@ -1,4 +1,5 @@
 const axon = require('axon');
+const objecthash = require('object-hash');
 const distributions = require('probability-distributions')
 
 var settings =
@@ -88,11 +89,29 @@ module.exports = function(peers, pb, parameters)
         {
             console.log('Received ECHO from', host, ':', message);
 
+            var hash = objecthash(message);
+            if(!(messages.echo.received[host]))
+            {
+                messages.echo.received[host] = message;
 
+                if(!(messages.echo.count[hash]))
+                    messages.echo.count[hash] = 1;
+                else
+                    messages.echo.count[hash]++;
+
+                if(messages.echo.count[hash] >= parameters.T && !checkpoints.ready)
+                {
+                    console.log('I have received ', T, ' ECHO messages for ', message);
+                    checkpoints.ready = true;
+                    sockets.pub.ready.send(message);
+                }
+            }
         },
         ready: function(host, message)
         {
+            console.log('Received READY from', host, ':', message);
 
+            var hash = object
         },
         deliver: function(host, message)
         {
