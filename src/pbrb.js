@@ -62,10 +62,14 @@ module.exports = function(peers, pb, parameters)
             console.log('Subscribing to', host, ":", port);
 
             socket.connect(port, host);
-            socket.on('message', function(message)
+
+            (function(index)
             {
-                handler(host, message);
-            });
+                socket.on('message', function(message)
+                {
+                    handler(index, message);
+                });
+            })(i);
 
             sub.push(socket);
         }
@@ -85,35 +89,35 @@ module.exports = function(peers, pb, parameters)
                 sockets.pub.echo.send(message);
             }
         },
-        echo: function(host, message)
+        echo: function(index, message)
         {
-            console.log('Received ECHO from', host, ':', message);
+            console.log('Received ECHO from', index, ':', message);
 
             var hash = objecthash(message);
-            if(!(messages.echo.received[host]))
+            if(!(messages.echo.received[index]))
             {
-                messages.echo.received[host] = message;
+                messages.echo.received[index] = message;
 
                 if(!(messages.echo.count[hash]))
                     messages.echo.count[hash] = 1;
                 else
                     messages.echo.count[hash]++;
 
+                console.log('Collected', messages.echo.count[hash], 'echo messages for', hash);
+
                 if(messages.echo.count[hash] >= parameters.T && !checkpoints.ready)
                 {
-                    console.log('I have received ', T, ' ECHO messages for ', message);
+                    console.log('I have received', parameters.T, 'ECHO messages for', message);
                     checkpoints.ready = true;
                     sockets.pub.ready.send(message);
                 }
             }
         },
-        ready: function(host, message)
+        ready: function(index, message)
         {
-            console.log('Received READY from', host, ':', message);
-
-            var hash = object
+            console.log('Received READY from', index, ':', message);
         },
-        deliver: function(host, message)
+        deliver: function(index, message)
         {
 
         }
