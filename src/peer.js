@@ -40,5 +40,6 @@ module.exports = function(host, parameters)
         daemons.pbrb = new pbrb(peers, daemons.pb, parameters.pbrb);
 
         self.publish = daemons.pb.send;
+        self.emitter = daemons.pbrb.emitter;
     };
 };

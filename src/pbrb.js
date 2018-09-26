@@ -1,11 +1,16 @@
 const axon = require('axon');
 const objecthash = require('object-hash');
 const distributions = require('probability-distributions')
+const eventEmitter = require('events');
+
 
 var settings =
 {
-    echoPort: 1235,
-    readyPort: 1236
+    ports:
+    {
+        echo: 1235,
+        ready: 1236
+    }
 };
 
 module.exports = function(peers, pb, parameters)
@@ -46,6 +51,10 @@ module.exports = function(peers, pb, parameters)
         deliver: {received: {}, count: {}}
     };
 
+    // Public members
+
+    self.emitter = new eventEmitter();
+
     // Private methods
 
     var subscribe = function(hosts, size, port, handler)
@@ -63,13 +72,13 @@ module.exports = function(peers, pb, parameters)
 
             socket.connect(port, host);
 
-            (function(index)
+            (function(host)
             {
                 socket.on('message', function(message)
                 {
-                    handler(index, message);
+                    handler(host, message);
                 });
-            })(i);
+            })(host);
 
             sub.push(socket);
         }
@@ -103,8 +112,6 @@ module.exports = function(peers, pb, parameters)
                 else
                     messages.echo.count[hash]++;
 
-                console.log('Collected', messages.echo.count[hash], 'echo messages for', hash);
-
                 if(messages.echo.count[hash] >= parameters.T && !checkpoints.ready)
                 {
                     console.log('I have received', parameters.T, 'ECHO messages for', message);
@@ -116,23 +123,62 @@ module.exports = function(peers, pb, parameters)
         ready: function(index, message)
         {
             console.log('Received READY from', index, ':', message);
+
+            var hash = objecthash(message);
+            if(!(messages.ready.received[index]))
+            {
+                messages.ready.received[index] = message;
+
+                if(!(messages.ready.count[hash]))
+                    messages.ready.count[hash] = 1;
+                else
+                    messages.ready.count[hash]++;
+
+                if(messages.ready.count[hash] >= parameters.P && !checkpoints.ready)
+                {
+                    console.log('I have received', parameters.P, 'READY messages for', message);
+                    checkpoints.ready = true;
+                    sockets.pub.ready.send(message);
+                }
+            }
         },
         deliver: function(index, message)
         {
+            console.log('Received READY from', index, ':', message);
 
+            var hash = objecthash(message);
+            if(!(messages.deliver.received[index]))
+            {
+                messages.deliver.received[index] = message;
+
+                if(!(messages.deliver.count[hash]))
+                    messages.deliver.count[hash] = 1;
+                else
+                    messages.deliver.count[hash]++;
+
+                if(messages.deliver.count[hash] >= parameters.Q && !checkpoints.deliver)
+                {
+                    console.log('I have received', parameters.Q, 'READY messages for', message);
+
+                    // brb-deliver the message
+                    checkpoints.deliver = true;
+                    self.emitter.emit('message', message);
+                    console.log('message delivered');
+                }
+            }
         }
     };
 
     // Setup
 
-    sockets.pub.echo.bind(settings.echoPort);
-    sockets.pub.ready.bind(settings.readyPub);
+    sockets.pub.echo.bind(settings.ports.echo);
+    sockets.pub.ready.bind(settings.ports.ready);
 
     var hosts = Object.keys(peers);
 
-    sockets.sub.echo = subscribe(hosts, parameters.E, settings.echoPort, handlers.echo);
-    sockets.sub.ready = subscribe(hosts, parameters.D, settings.readyPort, handlers.ready);
-    sockets.sub.deliver = subscribe(hosts, parameters.Z, settings.readyPort, handlers.deliver);
+    sockets.sub.echo = subscribe(hosts, parameters.E, settings.ports.echo, handlers.echo);
+    sockets.sub.ready = subscribe(hosts, parameters.D, settings.ports.ready, handlers.ready);
+    sockets.sub.deliver = subscribe(hosts, parameters.Z, settings.ports.ready, handlers.deliver);
 
     pb.emitter.on('message', handlers.gossip);
 }
