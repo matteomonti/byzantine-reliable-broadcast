@@ -19,13 +19,13 @@ else
         await mypeer.start();
         mypeer.emitter.on('message', function(message)
         {
-            console.log(process.hrtime(), '-> Message PBRB delivered:', message);
+            console.log(process.hrtime()[0] + "." + process.hrtime()[1]);
         });
 
         if(process.env['pbrbsender'])
             setTimeout(function()
             {
-                console.log(process.hrtime(), '-> Broadcasting message');
+                console.log(process.hrtime()[0] + "." + process.hrtime()[1]);
                 mypeer.publish('Hello World!');
             }, 1000);
     })();
