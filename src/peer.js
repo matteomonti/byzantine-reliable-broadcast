@@ -31,7 +31,7 @@ module.exports = function(host, parameters)
     self.start = async function()
     {
         var peerlist = await directory.fetch(host, self);
-        console.log('Peer list retrieved');
+        // console.log('Peer list retrieved');
 
         for(var i = 0; i < peerlist.length; i++)
             peers[peerlist[i].ip] = peerlist[i].pubkey;

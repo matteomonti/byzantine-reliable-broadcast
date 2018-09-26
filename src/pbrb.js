@@ -68,7 +68,7 @@ module.exports = function(peers, pb, parameters)
             var host = hosts[randomIndexes[i]];
             var socket = new axon.socket('sub');
 
-            console.log('Subscribing to', host, ":", port);
+            // console.log('Subscribing to', host, ":", port);
 
             socket.connect(port, host);
 
@@ -90,7 +90,7 @@ module.exports = function(peers, pb, parameters)
     {
         gossip: function(message)
         {
-            console.log('Received message from the gossip:', message);
+            // console.log('Received message from the gossip:', message);
 
             if(!checkpoints.echo)
             {
@@ -100,7 +100,7 @@ module.exports = function(peers, pb, parameters)
         },
         echo: function(index, message)
         {
-            console.log('Received ECHO from', index, ':', message);
+            // console.log('Received ECHO from', index, ':', message);
 
             var hash = objecthash(message);
             if(!(messages.echo.received[index]))
@@ -114,7 +114,7 @@ module.exports = function(peers, pb, parameters)
 
                 if(messages.echo.count[hash] >= parameters.T && !checkpoints.ready)
                 {
-                    console.log('I have received', parameters.T, 'ECHO messages for', message);
+                    // console.log('I have received', parameters.T, 'ECHO messages for', message);
                     checkpoints.ready = true;
                     sockets.pub.ready.send(message);
                 }
@@ -122,7 +122,7 @@ module.exports = function(peers, pb, parameters)
         },
         ready: function(index, message)
         {
-            console.log('Received READY from', index, ':', message);
+            // console.log('Received READY from', index, ':', message);
 
             var hash = objecthash(message);
             if(!(messages.ready.received[index]))
@@ -136,7 +136,7 @@ module.exports = function(peers, pb, parameters)
 
                 if(messages.ready.count[hash] >= parameters.P && !checkpoints.ready)
                 {
-                    console.log('I have received', parameters.P, 'READY messages for', message);
+                    // console.log('I have received', parameters.P, 'READY messages for', message);
                     checkpoints.ready = true;
                     sockets.pub.ready.send(message);
                 }
@@ -144,7 +144,7 @@ module.exports = function(peers, pb, parameters)
         },
         deliver: function(index, message)
         {
-            console.log('Received READY from', index, ':', message);
+            // console.log('Received READY from', index, ':', message);
 
             var hash = objecthash(message);
             if(!(messages.deliver.received[index]))
@@ -158,12 +158,12 @@ module.exports = function(peers, pb, parameters)
 
                 if(messages.deliver.count[hash] >= parameters.Q && !checkpoints.deliver)
                 {
-                    console.log('I have received', parameters.Q, 'READY messages for', message);
+                    // console.log('I have received', parameters.Q, 'READY messages for', message);
 
                     // brb-deliver the message
                     checkpoints.deliver = true;
                     self.emitter.emit('message', message);
-                    console.log('message delivered');
+                    // console.log('message delivered');
                 }
             }
         }
