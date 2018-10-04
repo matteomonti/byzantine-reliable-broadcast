@@ -15,7 +15,7 @@ else
     {
         // console.log('Starting peer');
 
-        var mypeer = new peer('master', parameters);
+        var mypeer = new peer(process.argv[3], parameters);
         await mypeer.start();
         mypeer.emitter.on('message', function(message)
         {
