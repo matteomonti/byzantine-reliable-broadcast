@@ -26,7 +26,7 @@ else
         if(process.argv[2] === 0)
             setTimeout(function()
             {
-                // console.log(process.hrtime()[0] + "." + process.hrtime()[1]);
+                console.log(process.hrtime()[0] + "." + process.hrtime()[1]);
                 mypeer.publish('Hello World!');
             }, 1000);
     })();
