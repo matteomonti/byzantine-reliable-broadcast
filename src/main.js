@@ -3,8 +3,6 @@ const directory = require('./directory.js');
 
 const parameters = {pb: {G: 4}, pbrb: {E: 4, D: 4, Z: 4, T: 2, P: 2, Q: 3}};
 
-console.log("The program just started");
-
 if(process.argv[2] === 'pbrbmain')
 {
     console.log('Starting directory server');
@@ -17,7 +15,7 @@ else
     {
         // console.log('Starting peer');
 
-        var mypeer = new peer('main', parameters);
+        var mypeer = new peer('master', parameters);
         await mypeer.start();
         mypeer.emitter.on('message', function(message)
         {
