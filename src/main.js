@@ -23,7 +23,7 @@ else
             // console.log('message is dilivered')
         });
 
-        if(process.argv[2] === 0)
+        if(process.argv[2] == 0)
             setTimeout(function()
             {
                 console.log(process.hrtime()[0] + "." + process.hrtime()[1]);
