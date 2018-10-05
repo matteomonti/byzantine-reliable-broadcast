@@ -17,14 +17,14 @@ else
 
         var mypeer = new peer(process.argv[3], parameters);
         await mypeer.start();
-        mypeer.emitter.on('message', function(message)
-        {
-            var timeStamp = Math.floor(Date.now());
-            console.log(timeStamp);
-            // console.log(process.hrtime()[0] + "." + process.hrtime()[1]);
-            // console.log('message is dilivered')
-            process.exit();
-        });
+        // mypeer.emitter.on('message', function(message)
+        // {
+        //     var timeStamp = Math.floor(Date.now());
+        //     console.log(timeStamp);
+        //     // console.log(process.hrtime()[0] + "." + process.hrtime()[1]);
+        //     // console.log('message is dilivered')
+        //     process.exit();
+        // });
 
         if(process.argv[2] == 0)
             setTimeout(function()

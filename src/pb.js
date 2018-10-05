@@ -35,6 +35,7 @@ module.exports = function(peers, parameters)
             messages.add(hash);
             sockets.pub.send(message);
             self.emitter.emit('message', message);
+            console.log("Message was pb delivered");
         }
     };
 
