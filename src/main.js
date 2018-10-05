@@ -21,6 +21,7 @@ else
         {
             console.log(process.hrtime()[0] + "." + process.hrtime()[1]);
             // console.log('message is dilivered')
+            process.exit();
         });
 
         if(process.argv[2] == 0)
