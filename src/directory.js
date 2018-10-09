@@ -36,6 +36,8 @@ module.exports =
                 for(var i = 0; i < replies.length; i++)
                     replies[i](peers);
             }
+
+            process.exit();
         });
     },
     fetch: function(host, peer)

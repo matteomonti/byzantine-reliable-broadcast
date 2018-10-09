@@ -35,7 +35,7 @@ module.exports = function(peers, parameters)
             messages.add(hash);
             sockets.pub.send(message);
             self.emitter.emit('message', message);
-            console.log("Message was pb delivered");
+            console.log('Message was pb delivered at:', Math.floor(Date.now()));
         }
     };
 
@@ -59,6 +59,7 @@ module.exports = function(peers, parameters)
     self.send = handle;
 
     // Setup
+
 
     sockets.pub.bind(settings.port);
 
