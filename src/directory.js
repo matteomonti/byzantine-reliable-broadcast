@@ -35,9 +35,9 @@ module.exports =
             {
                 for(var i = 0; i < replies.length; i++)
                     replies[i](peers);
+                    console.log("Master Node is done at time: " + Math.floor(Date.now()));
+                    process.exit();
             }
-
-            process.exit();
         });
     },
     fetch: function(host, peer)
