@@ -21,7 +21,7 @@ else
         mypeer.emitter.on('message', function(message)
         {
             var timeStamp = Math.floor(Date.now());
-            console.log('Message was pbrb delivered at:', timeStamp, 'and it took', (timeStamp - bootTime));
+            console.log('Message was pbrb delivered at:', timeStamp);
             // console.log(process.hrtime()[0] + "." + process.hrtime()[1]);
             // console.log('message is dilivered')
             process.exit();
